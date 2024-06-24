@@ -1,0 +1,54 @@
+<div class="container">
+    <mat-card>
+        <mat-card-title>To-do App</mat-card-title>
+        <mat-card-content>
+            <form (ngSubmit)="onSubmit(taskForm)" #taskForm="ngForm">
+                <mat-form-field class="mb-3">
+                    <mat-label for="task">Task</mat-label>
+                    <input matInput type="text" class="form-control" id="task" placeholder="Enter Task" [(ngModel)]="taskName" name="task"
+                        required>
+                    <mat-error *ngIf="taskForm.controls['task'].invalid && taskForm.controls['task'].touched">Required
+                        Field</mat-error>
+                </mat-form-field>
+                <button [disabled]="taskForm.invalid" id="submitBtn" type="submit" class="btn btn-primary">Add</button>
+            </form>
+        </mat-card-content>
+    </mat-card>
+     <mat-divider></mat-divider>
+    <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="task">
+            <mat-header-cell *matHeaderCellDef> Task </mat-header-cell>
+            <mat-cell *matCellDef="let task; let i = index;">
+                <ng-container *ngIf="!task.isEditing; else editTemplate">{{ task.taskName }}</ng-container>
+                <ng-template #editTemplate>
+                    <input matInput [(ngModel)]="task.taskName" (blur)="onEdit(task)">
+                </ng-template>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="completed">
+            <mat-header-cell *matHeaderCellDef> Completed </mat-header-cell>
+            <mat-cell *matCellDef="let task">
+                <mat-checkbox [(ngModel)]="task.isCompleted" (change)="onCheck(task)"></mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="edit">
+            <mat-header-cell *matHeaderCellDef> Edit </mat-header-cell>
+            <mat-cell *matCellDef="let task">
+                <button mat-icon-button color="accent" (click)="onEdit(task)">
+                    <mat-icon>{{ task.isEditing ? 'save' : 'edit' }}</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="delete">
+            <mat-header-cell *matHeaderCellDef> Delete </mat-header-cell>
+            <mat-cell *matCellDef="let task; let i = index;">
+                <button mat-icon-button color="warn" (click)="onDelete(i)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+</div>
